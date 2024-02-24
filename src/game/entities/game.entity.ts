@@ -13,4 +13,7 @@ export class Game {
 
   @Column()
   background_image: string;
+
+  @Column({ default: true })
+  isActive?: boolean;
 }

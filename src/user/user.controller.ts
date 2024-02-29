@@ -6,11 +6,13 @@ import {
   Patch,
   Param,
   Request,
+  HttpException,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Public } from '../auth/public.decorator';
+import { HttpStatusCode } from 'axios';
 
 @Controller('user')
 export class UserController {
@@ -22,23 +24,20 @@ export class UserController {
     return this.userService.create(createUserDto);
   }
 
-  @Get()
-  findAll() {
-    return this.userService.findAll();
-  }
-
   @Get('/me')
   me(@Request() request) {
-    return request.user;
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.userService.findOne(+id);
+    return this.userService.findOne(request.user.id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(+id, updateUserDto);
+  update(
+    @Param('id') id: string,
+    @Body() updateUserDto: UpdateUserDto,
+    @Request() request,
+  ) {
+    if (request.user.id !== id) {
+      throw new HttpException('Unauthorized', HttpStatusCode.Unauthorized);
+    }
+    return this.userService.update(id, updateUserDto);
   }
 }

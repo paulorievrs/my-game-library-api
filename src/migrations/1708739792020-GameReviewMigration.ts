@@ -13,10 +13,10 @@ export class GameReviewMigration1708739792020 implements MigrationInterface {
         columns: [
           {
             name: 'id',
-            type: 'int',
+            type: 'uuid',
             isPrimary: true,
-            isGenerated: true,
-            generationStrategy: 'increment',
+            generationStrategy: 'uuid',
+            default: 'uuid_generate_v4()',
           },
           {
             name: 'review',
@@ -56,7 +56,7 @@ export class GameReviewMigration1708739792020 implements MigrationInterface {
           },
           {
             name: 'userId',
-            type: 'int',
+            type: 'uuid',
           },
         ],
       }),

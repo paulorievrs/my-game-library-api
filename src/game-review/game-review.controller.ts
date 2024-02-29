@@ -29,7 +29,7 @@ export class GameReviewController {
 
   @Get(':id')
   async findOne(@Request() request, @Param('id') id: string) {
-    const gameReview = await this.gameReviewService.findOne(+id);
+    const gameReview = await this.gameReviewService.findOne(id);
     if (
       request.user.username !== gameReview.user.username &&
       !gameReview.is_public
@@ -45,16 +45,12 @@ export class GameReviewController {
     @Param('id') id: string,
     @Body() updateGameReviewDto: CreateGameReviewDto,
   ) {
-    return this.gameReviewService.update(
-      updateGameReviewDto,
-      +id,
-      request.user,
-    );
+    return this.gameReviewService.update(updateGameReviewDto, id, request.user);
   }
 
   @Delete(':id')
   remove(@Request() request, @Param('id') id: string) {
-    return this.gameReviewService.remove(+id, request);
+    return this.gameReviewService.remove(id, request);
   }
 
   @Get()

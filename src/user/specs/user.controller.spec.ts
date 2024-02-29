@@ -1,4 +1,4 @@
-import { mockUser, users } from './../../../test/mocks';
+import { mockUser } from './../../../test/mocks';
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserController } from '../user.controller';
 import { UserService } from '../user.service';
@@ -47,33 +47,9 @@ describe('UserController', () => {
     });
   });
 
-  describe('findAll', () => {
-    it('should return an array of users', async () => {
-      jest.spyOn(userService, 'findAll').mockResolvedValue(users);
-
-      const result = await controller.findAll();
-
-      expect(result).toBeDefined();
-      expect(result).toEqual(users);
-    });
-  });
-
-  describe('findOne', () => {
-    it('should return the user with the specified id', async () => {
-      const userId = 1;
-
-      jest.spyOn(userService, 'findOne').mockResolvedValue(mockUser);
-
-      const result = await controller.findOne(userId.toString());
-
-      expect(result).toBeDefined();
-      expect(result).toEqual(mockUser);
-    });
-  });
-
   describe('update', () => {
     it('should update the user with the specified id', async () => {
-      const userId = 1;
+      const userId = '123';
       const updateUserDto: UpdateUserDto = {
         username: 'updatedUser',
         email: 'updated@example.com',
@@ -81,11 +57,18 @@ describe('UserController', () => {
         bio: 'UK',
       };
 
-      const updatedUser: User = { id: userId, ...updateUserDto };
+      const updatedUser: User = {
+        id: userId,
+        ...updateUserDto,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
 
       jest.spyOn(userService, 'update').mockResolvedValue(updatedUser);
 
-      const result = await controller.update(userId.toString(), updateUserDto);
+      const result = await controller.update(userId.toString(), updateUserDto, {
+        user: updatedUser,
+      });
 
       expect(result).toBeDefined();
       expect(result).toEqual(updatedUser);

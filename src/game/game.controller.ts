@@ -24,7 +24,7 @@ export class GameController {
   }
 
   @Get('/')
-  getAll() {
-    return this.gameService.findAll();
+  getAll(@Query('name') name: string) {
+    return this.gameService.findAll(name);
   }
 }

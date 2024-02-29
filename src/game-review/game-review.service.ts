@@ -26,19 +26,20 @@ export class GameReviewService {
     gameReview.rating = createGameReviewDto.rating;
     gameReview.review_at = new Date();
     gameReview.user = await this.userService.findOne(user.id);
-
-    return this.gameReviewRepository.insert(gameReview);
+    await this.gameReviewRepository.insert(gameReview);
+    return gameReview;
   }
 
   async update(
     createGameReviewDto: CreateGameReviewDto,
-    id: number,
+    id: string,
     user: User,
   ) {
     const gameReview = await this.findOne(id);
     if (gameReview.user.username !== user.username) {
       return null;
     }
+
     gameReview.beat = createGameReviewDto.beat;
     gameReview.game = createGameReviewDto.game;
     gameReview.gave_up = createGameReviewDto.gave_up;
@@ -50,14 +51,14 @@ export class GameReviewService {
     return this.gameReviewRepository.save(gameReview);
   }
 
-  findOne(id: number) {
+  findOne(id: string) {
     return this.gameReviewRepository.findOne({
       where: { id },
       relations: ['game', 'user'],
     });
   }
 
-  async remove(id: number, user: User) {
+  async remove(id: string, user: User) {
     const gameReview = await this.findOne(id);
     if (gameReview.user.username !== user.username) {
       return null;
